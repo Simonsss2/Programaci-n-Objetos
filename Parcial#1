@@ -1,0 +1,102 @@
+/* 1) ¿Cuál declara y define una variable entera con valor 10? 
+res:  B) int x = 10;
+
+2) ¿Qué imprime?   std::cout << 7/2 << " " << 7/2.0;
+res: B) 3 3.5 
+
+3) Con bool a=true, b=false; ¿Qué imprime?   std::cout << (a&&b) << " " << (a||b) << " " << (!b);
+res: B) 0 1 1
+
+4) Dado int x=3; if (x=0) { ... } else { ... } ¿qué ocurre?
+res:  C) Entra al else porque el valor es 0 tras la asignación
+
+5) do-while respecto a while:
+res:  B) Ejecuta al menos una vez. 
+
+6) ¿Cuál lee dos enteros separados por espacio? 
+res:  C) cin >> a >> b; 
+
+7) ¿Qué imprime? 
+int a=5, b=2; 
+std::cout << a + b*3 << '\n';
+res:  A) 11 
+
+8) ¿Cuál firma pasa un entero por referencia? 
+res:  B) void f(int& n);
+
+9) ¿Qué hace continue en un for?
+res:  B) Salta a la siguiente iteración.
+
+10) ¿Cuál condición es verdadera?
+res:  A) (3 == 3) && !(2 > 5) 
+
+
+SECCION B
+1) 
+int a=5, b=2; 
+std::cout << a + b*3 << std::endl; 
+res: 11
+
+2) 
+int n=0; 
+while (n<3) { 
+std::cout << n << " "; 
+n++; 
+} 
+res: 0 1 2
+
+3) 
+int x=10; 
+if (x%2==0) std::cout << "par"; 
+else        
+std::cout << "impar";
+res: par
+
+4) 
+int i=3; 
+do { 
+std::cout << i--; 
+} while (i>0)
+res: 321
+
+5) 
+int a=1; 
+int b = (a++ > 1) ? 100 : 200; 
+std::cout << a << " " << b;
+res: 2 200
+
+SECCION C
+1) Firma: int max3(int a, int b, int c);
+res: int max3(int a, int b, int c){
+    if(a>=b && a>=c) return a;
+    else if(b>=a && b>=c) return b;
+    else return c;
+}
+
+2) Firma: int sumaRango(int a, int b);
+res: int sumaRango(int a, int b){
+    int suma = 0;
+
+    for(int i=a; i<=b; i++){
+        suma= suma + i;
+    }
+    return suma;
+}
+3) Firma: bool contieneDigito(int n, int d);
+res: bool contieneDigito(int n, int d){
+    if(n==0 && d==0)
+        return true;
+    while(n > 0){
+        int digito= n % 10;
+        if(digito==d)
+            return true;
+        n /= 10;
+    }
+    return false;
+
+4) Firma: void tablaMultiplicar(int n);
+res: void tablaMultiplicar(int n){
+    for(int i=1; i<=10; i++){
+        cout<<n<<" x "<<i<<" = "<<(n * i)<<endl;
+    }
+}
