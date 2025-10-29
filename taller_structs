@@ -1,0 +1,260 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <cctype>
+#include <numeric>
+#include <cmath>
+using namespace std;
+
+struct Producto1{
+    string nombre;
+    double precio =0.0;
+    int stock =0;
+
+    Producto1(string n,double p =0.0,int s =0)
+        : nombre(n),precio(p),stock(s){}
+
+    void mostrar() const{
+        cout<<"Nombre: "<<nombre<<"\n";
+        cout<<"Precio: $"<<fixed<<setprecision(0)<<precio<<" COP\n";
+        cout<<"Stock: "<<stock<<" unidades\n";
+        cout<<"-------------------------\n";
+    }
+};
+struct Producto2{
+    string nombre;
+    double precio =0.0;
+    int stock =0;
+
+    Producto2(string n,double p =0.0,int s =0)
+        : nombre(n),precio(p),stock(s){}
+
+    bool disponible() const{ return stock > 0; }
+    bool esValido() const{ return (precio >= 0 && !nombre.empty()); }
+
+    void mostrar() const{
+        cout<<"Nombre: "<<nombre<<"\n";
+        cout<<"Precio: $"<<fixed<<setprecision(0)<<precio<<" COP\n";
+        cout<<"Stock: "<<stock<<" unidades\n";
+        cout<<"Disponible: "<<(disponible() ? "Sí" : "No")<<"\n";
+        cout<<"Válido: "<<(esValido() ? "Sí" : "No")<<"\n";
+        cout<<"-------------------------\n";
+    }
+};
+struct Producto3{
+    string nombre;
+    double precio =0.0;
+    int stock =0;
+
+    Producto3(string n,double p =0.0, int s =0)
+        : nombre(n),precio(p),stock(s){}
+
+    bool disponible() const{ return stock > 0; }
+    bool esValido() const{ return (precio >= 0 && !nombre.empty()); }
+
+    bool operator==(const Producto3& other) const{
+        if(nombre.size() != other.nombre.size()) return false;
+        for(size_t i = 0; i < nombre.size(); ++i)
+            if(tolower(nombre[i]) != tolower(other.nombre[i]))
+                return false;
+        return true;
+    }
+    bool operator<(const Producto3& other) const{
+        if(precio == other.precio)
+            return nombre < other.nombre;
+        return precio < other.precio;
+    }
+    void mostrar() const{
+        cout<<"Nombre: "<<nombre<<"\n";
+        cout<<"Precio: $"<<fixed<<setprecision(0)<<precio<<" COP\n";
+        cout<<"Stock: "<<stock<<" unidades\n";
+        cout<<"-------------------------\n";
+    }
+};
+struct Termino{
+    double coeficiente;
+    int exponente;
+};
+struct Polinomio{
+    vector<Termino> terminos;
+
+    void agregarTermino(double coef, int exp){
+        terminos.push_back({coef, exp});
+    }
+    double evaluar(double x) const{
+        double resultado =0;
+        for(auto& t : terminos)
+            resultado += t.coeficiente * pow(x, t.exponente); 
+        return resultado;
+    }
+    void mostrar() const{
+        cout<<"P(x) = ";
+        for(size_t i = 0; i < terminos.size(); ++i){
+            cout<<terminos[i].coeficiente<<"x^"<<terminos[i].exponente;
+            if(i < terminos.size() - 1) cout<<" + ";
+        }
+        cout<<"\n";
+    }
+};
+int gcd(int a, int b){
+    a = (a < 0) ? -a : a;
+    b = (b < 0) ? -b : b;
+    while(b != 0){
+        int temp = a % b;
+        a = b;
+        b = temp;
+    }
+    return a;
+}
+
+struct Fraccion{
+    int numerador;
+    int denominador;
+
+    Fraccion(int n = 0, int d = 1){
+        if(d == 0){
+            cout<<"denominador no puede ser cero.\n";
+            denominador =1;
+        }else{
+            numerador =n;
+            denominador =d;
+            simplificar();
+        }
+    }
+    void simplificar(){
+        int mcd = gcd(numerador, denominador);
+        numerador /= mcd;
+        denominador /= mcd;
+        if(denominador < 0){
+            numerador *= -1;
+            denominador *= -1;
+        }
+    }
+    Fraccion operator+(const Fraccion& f) const{
+        return Fraccion(numerador * f.denominador + f.numerador * denominador,
+                        denominador * f.denominador);
+    }
+    Fraccion operator*(const Fraccion& f) const{
+        return Fraccion(numerador * f.numerador, denominador * f.denominador);
+    }
+    void mostrar() const{
+        cout<<numerador<<"/"<<denominador<<"\n";
+    }
+};
+struct Contacto{
+    string nombre;
+    string telefono;
+    string email;
+
+    void mostrar() const{
+        cout<<"Nombre: "<<nombre<<"\n";
+        cout<<"Teléfono: "<<telefono<<"\n";
+        cout<<"Email: "<<email<<"\n";
+        cout<<"-------------------------\n";
+    }
+};
+struct Agenda{
+    vector<Contacto> contactos;
+
+    void agregar(const Contacto& c){
+        contactos.push_back(c);
+    }
+
+    void mostrarTodos() const{
+        cout<<"Lista de contactos:\n";
+        for(const auto& c : contactos) c.mostrar();
+    }
+
+    Contacto* buscarPorNombre(const string& nombreBuscado){
+        for(auto& c : contactos){
+            if(tolower(c.nombre[0]) == tolower(nombreBuscado[0]))
+                if(c.nombre == nombreBuscado)
+                    return &c;
+        }
+        return nullptr;
+    }
+};
+int main() {
+    cout<<"=============================\n";
+    cout<<"Punto 1: Constructores\n";
+    cout<<"=============================\n";
+    Producto1 p1("Lápiz");
+    Producto1 p2("Cuaderno",3500);
+    Producto1 p3("Mochila",25000,10);
+    p1.mostrar(); p2.mostrar(); p3.mostrar();
+
+    cout<<"\n=============================\n";
+    cout<<"Punto 2: Métodos const y validación\n";
+    cout<<"=============================\n";
+    vector<Producto2> productos2 = {
+        {"Lápiz",1200,25},
+        {"Cuaderno",3500,0},
+        {"",2000,5},
+        {"Regla",-500,10}
+    };
+    cout<<"Productos originales:\n";
+    for(const auto& p : productos2) p.mostrar();
+    productos2.erase(remove_if(productos2.begin(),productos2.end(),
+                  [](const Producto2& p) { return !p.esValido(); }),productos2.end());
+    cout<<"\nProductos válidos y disponibles:\n";
+    for(const auto& p : productos2) if(p.disponible()) p.mostrar();
+
+    cout<<"\n=============================\n";
+    cout<<"Punto 3: Operadores == y <\n";
+    cout<<"=============================\n";
+    vector<Producto3> productos3 = {
+        {"Cuaderno",3500,5},
+        {"Lápiz",1200,25},
+        {"Mochila",25000,10},
+        {"borrador",1200,15}
+    };
+    cout<<"Productos originales:\n";
+    for(const auto& p : productos3) p.mostrar();
+    sort(productos3.begin(),productos3.end());
+    cout<<"\nProductos ordenados:\n";
+    for(const auto& p : productos3) p.mostrar();
+    Producto3 buscado("LAPIZ");
+    auto it = find(productos3.begin(),productos3.end(),buscado);
+    if(it != productos3.end()){ cout<<"\nProducto encontrado:\n"; it->mostrar(); }
+
+    cout<<"\n=============================\n";
+    cout<<"Punto 4: Polinomio\n";
+    cout<<"=============================\n";
+    Polinomio p;
+    p.agregarTermino(2, 2);
+    p.agregarTermino(3, 1);
+    p.agregarTermino(1, 0);
+    p.mostrar();
+    cout<<"P(2) = "<<p.evaluar(2)<<"\n";
+
+    cout<<"\n=============================\n";
+    cout<<"Punto 6: Fracción\n";
+    cout<<"=============================\n";
+    Fraccion f1(2, 4), f2(3, 6);
+    cout<<"f1 = "; f1.mostrar();
+    cout<<"f2 = "; f2.mostrar();
+    Fraccion suma= f1 + f2;
+    Fraccion prod= f1 * f2;
+    cout<<"Suma: "; suma.mostrar();
+    cout<<"Producto: "; prod.mostrar();
+
+    cout<<"\n=============================\n";
+    cout<<"Punto 7: Sistema de contactos\n";
+    cout<<"=============================\n";
+    Agenda agenda; 
+    agenda.agregar({"Juan Pérez","3001234567","juan@mail.com"});
+    agenda.agregar({"Ana Gómez","3107654321","ana@mail.com"});
+    agenda.agregar({"Carlos Ruiz","3209876543","carlos@mail.com"});
+    agenda.mostrarTodos();
+
+    string nombreBuscar = "Ana Gómez";
+    Contacto* encontrado = agenda.buscarPorNombre(nombreBuscar);
+    if(encontrado){
+        cout<<"\nContacto encontrado:\n";
+        encontrado->mostrar();
+    }else{
+        cout<<"\nContacto no encontrado.\n";
+    }
+}
