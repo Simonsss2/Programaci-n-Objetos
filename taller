@@ -1,0 +1,262 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <limits>
+#include <vector>
+#include <algorithm>
+#include <cctype>
+#include <numeric>
+#include <cmath>
+#include <cstring>
+#include <fstream>
+using namespace std;
+
+void ejercicio1(){
+    cout<<"EJERCICIO 1: Estadisticas"<<endl;
+    int n;
+    cout<<"Ingrese cantidad de numeros: "; cin>>n;
+    vector<double>v(n);
+    cout<<"Ingrese "<<n<<" numeros: ";
+    for(int i=0;i<n;i++)cin>>v[i];
+    double min=*min_element(v.begin(),v.end());
+    double max=*max_element(v.begin(),v.end());
+    double prom=accumulate(v.begin(),v.end(),0.0)/n;
+    cout<<"min="<<min<<" max="<<max<<" prom="<<fixed<<setprecision(2)<<prom<<endl<<endl;
+}
+void ejercicio2(){
+    cout<<"EJERCICIO 2: Rotacion circular"<<endl;
+    int n,k;
+    cout<<"Ingrese el numero de elementos del arreglo: "; cin>>n;
+    vector<int>a(n);
+    cout<<"Ingrese "<<n<<" numeros: ";
+    for(int i=0;i<n;i++)cin>>a[i];
+    cout<<"Ingrese cantidad de posiciones a rotar: "; cin>>k;
+    k%=n;
+    rotate(a.rbegin(),a.rbegin()+k,a.rend());
+    cout<<"Arreglo rotado: ";
+    for(int x:a)cout<<x<<" ";
+    cout<<endl<<endl;
+}
+void ejercicio3(){
+    cout<<"EJERCICIO 3: Normalizar cadenas"<<endl;
+    cin.ignore();
+    string linea;
+    cout<<"Ingrese la linea: ";
+    getline(cin,linea);
+    string salida;
+    for(char c:linea)
+        if(isdigit(c))salida+=c;
+    cout<<"Salida: \""<<salida<<"\" (longitud "<<salida.size()<<")"<<endl<<endl;
+}
+void ejercicio4(){
+    cout<<"EJERCICIO 4: Matriz suma por fila y columnas"<<endl;
+    int m,n;
+    cout<<"Ingrese las dimensiones de la matriz (m filas, n columnas): "; cin>>m>>n;
+    vector<vector<int>>A(m,vector<int>(n));
+    cout<<"Ingrese los elementos:"<<endl;
+    for(int i=0;i<m;i++)
+        for(int j=0;j<n;j++)
+            cin>>A[i][j];
+    cout<<"Matriz ingresada:"<<endl;
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++)cout<<A[i][j]<<" ";
+        cout<<endl;
+    }
+    cout<<"Suma por fila: ";
+    for(int i=0;i<m;i++){
+        int suma=accumulate(A[i].begin(),A[i].end(),0);
+        cout<<suma<<" ";
+    }
+    cout<<endl<<"Suma por columna: ";
+    for(int j=0;j<n;j++){
+        int suma=0;
+        for(int i=0;i<m;i++)suma+=A[i][j];
+        cout<<suma<<" ";
+    }
+    cout<<endl<<endl;
+}
+struct Estudiante{
+    char nombre[40];
+    int edad;
+    double promedio;
+};
+int cmp_prom_desc(const void*a,const void*b){
+    double pa=((Estudiante*)a)->promedio;
+    double pb=((Estudiante*)b)->promedio;
+    return (pb>pa)-(pb<pa);
+}
+int buscar_nombre(Estudiante*v,size_t n,const char*clave){
+    for(size_t i=0;i<n;i++){
+        if(strcmp(v[i].nombre,clave)==0)
+            return i;
+    }
+    return -1;
+}
+void ejercicio5(){
+    cout<<"EJERCICIO 5: Registro de estudiantes"<<endl;
+    int n;
+    cout<<"Ingrese cantidad de estudiantes: ";
+    while(!(cin>>n) || n<=0){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        cout<<"Entrada invalida. Ingrese un numero entero positivo: ";
+    }
+    vector<Estudiante>v(n);
+    cin.ignore();
+    for(int i=0;i<n;i++){
+        cout<<"\nEstudiante "<<i+1<<endl;
+        cout<<"Nombre: ";
+        cin.getline(v[i].nombre,40);
+        cout<<"Edad: ";
+        while(!(cin>>v[i].edad)){
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(),'\n');
+            cout<<"Edad invalida. Ingrese un numero: ";
+        }
+        cout<<"Promedio: ";
+        while(!(cin>>v[i].promedio)){
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(),'\n');
+            cout<<"Promedio invalido. Ingrese un numero: ";
+        }
+        cin.ignore();
+    }
+    qsort(v.data(),v.size(),sizeof(Estudiante),cmp_prom_desc);
+
+    cout<<"\nTop 3 por promedio:"<<endl;
+    for(int i=0;i<min(3,n);i++)
+        cout<<v[i].nombre<<" ("<<v[i].promedio<<")"<<endl;
+
+    char clave[40];
+    cout<<"\nBuscar estudiante por nombre: ";
+    cin.getline(clave,40);
+    int pos=buscar_nombre(v.data(),v.size(),clave);
+    if(pos!=-1)
+        cout<<"Encontrado → "<<v[pos].nombre<<", Edad "<<v[pos].edad<<", Promedio "<<v[pos].promedio<<endl;
+    else
+        cout<<"No encontrado"<<endl;
+    cout<<endl;
+}
+struct Nodo{
+    int x;
+    Nodo*sig;
+};
+Nodo*push_front(Nodo*cabeza,int x){
+    Nodo*nuevo=(Nodo*)malloc(sizeof(Nodo));
+    nuevo->x=x;nuevo->sig=cabeza;
+    return nuevo;
+}
+Nodo*push_back(Nodo*cabeza,int x){
+    Nodo*nuevo=(Nodo*)malloc(sizeof(Nodo));
+    nuevo->x=x;nuevo->sig=nullptr;
+    if(!cabeza)return nuevo;
+    Nodo*tmp=cabeza;
+    while(tmp->sig)tmp=tmp->sig;
+    tmp->sig=nuevo;
+    return cabeza;
+}
+Nodo*pop_front(Nodo*cabeza){
+    if(!cabeza)return nullptr;
+    Nodo*tmp=cabeza;
+    cabeza=cabeza->sig;
+    free(tmp);
+    return cabeza;
+}
+void print_list(Nodo*cabeza){
+    while(cabeza){
+        cout<<cabeza->x<<" ";
+        cabeza=cabeza->sig;
+    }
+    cout<<endl;
+}
+void clear(Nodo*cabeza){
+    while(cabeza){
+        Nodo*tmp=cabeza;
+        cabeza=cabeza->sig;
+        free(tmp);
+    }
+}
+void ejercicio6(){
+    cout<<"EJERCICIO 6: Lista dinamica simple"<<endl;
+    Nodo*cabeza=nullptr;
+    string cmd;
+    while(true){
+        cin>>cmd;
+        if(cmd=="fin")break;
+        if(cmd=="pf"){
+            int x;cin>>x;cabeza=push_front(cabeza,x);
+        }else if(cmd=="pb"){
+            int x;cin>>x;cabeza=push_back(cabeza,x);
+        }else if(cmd=="pop"){
+            cabeza=pop_front(cabeza);
+        }else if(cmd=="clear"){
+            clear(cabeza);cabeza=nullptr;
+        }
+    }
+    print_list(cabeza);
+    clear(cabeza);
+    cout<<endl;
+}
+int doble(int x){return x*2;}
+int cuadrado(int x){return x*x;}
+
+void aplicar(int*a,size_t n,int(*op)(int)){
+    for(size_t i=0;i<n;i++)a[i]=op(a[i]);
+}
+
+void ejercicio7(){
+    cout<<"EJERCICIO 7: Punteros a funcion (callbacks)"<<endl;
+    int n;
+    cout<<"Ingrese cantidad de elementos: ";
+    cin>>n;
+    vector<int>a(n);
+    cout<<"Ingrese "<<n<<" numeros: ";
+    for(int i=0;i<n;i++)cin>>a[i];
+    cout<<"1. Doble  2. Cuadrado -> ";
+    int op;cin>>op;
+    if(op==1)aplicar(a.data(),a.size(),doble);
+    else aplicar(a.data(),a.size(),cuadrado);
+    cout<<"Resultado: ";
+    for(int x:a)cout<<x<<" ";
+    cout<<endl<<endl;
+}
+struct Venta{
+    char prod[32];
+    int unidades;
+    double precio;
+};
+void ejercicio8(){
+    cout<<"EJERCICIO 8: Archivo + estructuras — estadisticas de ventas"<<endl;
+    ifstream f("ventas.csv");
+    if(!f){
+        cout<<"Error: no se pudo abrir el archivo ventas.csv"<<endl;
+        return;
+    }
+    vector<Venta>v;
+    Venta tmp;
+    char coma;
+    while(f.getline(tmp.prod,32,',')){
+        f>>tmp.unidades>>coma>>tmp.precio;
+        f.ignore(1000,'\n');
+        v.push_back(tmp);
+    }
+    double total=0;
+    int maxInd=0;
+    for(size_t i=0;i<v.size();i++){
+        total+=v[i].unidades*v[i].precio;
+        if(v[i].unidades>v[maxInd].unidades)maxInd=i;
+    }
+    cout<<"Total vendido: "<<fixed<<setprecision(2)<<total<<endl;
+    cout<<"Producto mas vendido: "<<v[maxInd].prod<<endl;
+    cout<<"Ticket promedio: "<<(total/v.size())<<endl<<endl;
+}
+int main(){
+    ejercicio1();
+    ejercicio2();
+    ejercicio3();
+    ejercicio4();
+    ejercicio5();
+    ejercicio6();
+    ejercicio7();
+    ejercicio8();
+}
