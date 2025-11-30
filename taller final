@@ -1,0 +1,331 @@
+#include<iostream>
+#include<stdlib.h>
+#include<string>
+using namespace std;
+
+class vehiculo{
+	private:
+		string marca;
+		string modelo;
+		int anio;
+		double velocidadMax;
+	public:
+		vehiculo();
+		void setVehiculo(string,string,int,double);
+		string getVehiculoMarca();
+		string getVehiculoModelo();
+		int getVehiculoAnio();
+		double getVehiculoVelocidadMax();
+		virtual void mostrarInfo();
+		void acelerar(double incremento);
+};
+vehiculo::vehiculo(){
+}
+
+void vehiculo::setVehiculo(string _marca,string _modelo,int _anio,double _velocidadMax){
+	marca = _marca;
+	modelo = _modelo;
+	if(_anio > 1886)
+		anio = _anio;
+	else{
+		cout<<"El año del vehiculo debe ser mayor a 1886.";
+	}
+	if(_velocidadMax > 0)
+		velocidadMax = _velocidadMax;
+	else{
+		cout<<"La verlocidad maxima debe ser mayor a 0";
+	}	
+}
+string vehiculo::getVehiculoMarca(){
+	return marca;
+}
+ 
+string vehiculo::getVehiculoModelo(){
+	return modelo;
+}
+
+int vehiculo::getVehiculoAnio(){
+	return anio;
+}
+
+double vehiculo::getVehiculoVelocidadMax(){
+	return velocidadMax;
+}
+
+void vehiculo::acelerar(double incremento){
+	if(incremento > 0){
+		velocidadMax += incremento;
+		cout<<"Nueva velocidad maxima: "<<velocidadMax<<endl;
+	}else{
+		cout<<"El incremento debe ser positiva.\n";
+	}
+}
+
+void vehiculo::mostrarInfo(){
+	cout<<"\nMarca: "<<marca<<endl;
+	cout<<"Modelo: "<<modelo<<endl;
+	cout<<"Anio: "<<anio<<endl;
+	cout<<"Velocidad Maxima: "<<velocidadMax<<endl;
+}
+
+class producto{
+	private:
+		string codigo;
+		string nombre;
+		double precio;
+		int cantidad;
+		double total;
+	public:
+		producto();
+		void setproducto(string,string,double,int);
+		string getProductoCodigo();
+		string getProductoNombre();
+		double getProductoPrecio();
+		double getProductoTotal();
+		int getProductoCantidad();
+		void mostrarInfo();
+		void calcularValorTotal();
+		void aplicarDescuento(double porcentaje);		
+};
+producto::producto(){
+}
+
+void producto::setproducto(string _codigo,string _nombre,double _precio,int _cantidad){
+	codigo = _codigo;
+	nombre = _nombre;
+	if(_precio > 0)
+		precio = _precio;
+	else{
+		cout<<"El precio no puede ser negativo";
+	}
+	if(_cantidad > 0)
+		cantidad = _cantidad;
+	else{
+		cout<<"La cantidad no puede ser negativa";
+	}
+}
+string producto::getProductoCodigo(){
+	return codigo;
+}
+string producto::getProductoNombre(){
+	return nombre;
+}
+double producto::getProductoPrecio(){
+	return precio;
+}
+double producto::getProductoTotal() {
+    return total;
+}
+
+int producto::getProductoCantidad(){
+	return cantidad;
+}
+
+void producto::mostrarInfo(){
+	cout<<"\nCodigo: "<<codigo<<endl;
+	cout<<"Nombre: "<<nombre<<endl;
+	cout<<"Precio: "<<precio<<endl;
+	cout<<"Cantidad: "<<cantidad<<endl;
+}
+
+void producto::aplicarDescuento(double porcentaje){
+	if(porcentaje > 0){
+		precio = precio - (precio * (porcentaje/100));
+	}else{
+		cout<<"El porcentaje debe ser positivo.";
+	}
+}
+
+void producto::calcularValorTotal(){
+	total = precio * cantidad;
+}
+
+
+class automovil : public vehiculo{
+	private:
+		int numeroPuertas;
+		string combustible;
+	public:
+		automovil();
+		
+		void setautomovil(string,string,int,int,int,string);
+		int getnumeroPuertas();
+		string getcombustible();
+		void mostrarInfo() override;
+};
+automovil::automovil(){
+}
+
+void automovil::setautomovil(string _marca,string _modelo,int _anio,int _velocidadMax,
+											int _numeroPuertas,string _combustible){
+	setVehiculo(_marca,_modelo,_anio,_velocidadMax);
+	numeroPuertas = _numeroPuertas;
+	combustible = _combustible;
+}
+
+int automovil::getnumeroPuertas(){
+	return numeroPuertas;
+}
+string automovil::getcombustible(){
+	return combustible;
+}
+void automovil::mostrarInfo(){
+	vehiculo::mostrarInfo();
+	cout<<"numero de puertas: "<<numeroPuertas<<endl;
+	cout<<"tipo de combustible: "<<combustible<<endl;
+}
+
+class moto : public vehiculo{
+	private:
+		bool tieneAleron;
+		int cilindrada;
+	public:
+		moto();
+		void setmoto(string,string,int,int,bool,int);
+		bool getTieneAleron();
+		int getCilindrada();
+		void mostrarInfo() override;
+};
+moto::moto(){
+}
+void moto::setmoto(string _marca,string _modelo,int _anio,int _velocidadMax,bool _tieneAleron,int _cilindrada){
+	setVehiculo(_marca,_modelo,_anio,_velocidadMax);
+	tieneAleron = _tieneAleron;
+	cilindrada = _cilindrada;				
+}
+											
+bool moto::getTieneAleron(){
+	return tieneAleron;
+}
+
+int moto::getCilindrada(){
+	return cilindrada;
+}
+void moto::mostrarInfo(){
+	vehiculo::mostrarInfo();
+	cout<<"aleron: "<<tieneAleron<<endl;
+	cout<<"cilindraje: "<<cilindrada<<endl;
+}
+
+
+class empleado{
+	private:
+		string nombreCompleto;
+		string numeroEmpleado;
+		double salarioBase;
+	public:
+		empleado();
+		void setEmpleado(string,string,double);
+		string getNombreCompleto();
+		string getNumeroEmpleado();
+		void setSalarioBase(double);
+		double getSalarioBase();
+		virtual void mostrarInfo();
+};
+empleado::empleado(){
+}
+void empleado::setEmpleado(string _nombreCompleto,string _numeroEmpleado,double _salarioBase){
+	nombreCompleto = _nombreCompleto;
+	numeroEmpleado = _numeroEmpleado;
+	salarioBase = _salarioBase;
+}
+
+double empleado::getSalarioBase(){
+	return salarioBase;
+}
+
+string empleado::getNombreCompleto(){
+	return nombreCompleto;
+}
+string empleado::getNumeroEmpleado(){
+	return numeroEmpleado;
+}
+void empleado::mostrarInfo(){
+	cout<<"Nombre de empleado: "<<nombreCompleto<<endl;
+	cout<<"Numero de empleado: "<<numeroEmpleado<<endl;
+	cout<<"Salario base: "<<salarioBase<<endl;
+}
+
+void empleado::setSalarioBase(double s){
+	salarioBase = s;
+}
+
+class empleadoCompleto : public empleado{
+	private:
+		string beneficios;
+		double bono;
+	public: 
+	empleadoCompleto();
+	void setEmpleadoCompleto(string,string,double,string,double);
+	string getBeneficios();
+	double getBono();
+	double salarioTotal();
+	void mostrarInfo() override;
+};
+empleadoCompleto::empleadoCompleto(){
+}
+
+void empleadoCompleto::setEmpleadoCompleto(string _nombreCompleto,string _numeroEmpledo, double _salarioBase,string _beneficios,double _bono){
+	setEmpleado(_nombreCompleto, _numeroEmpleado, _salarioBase);
+	beneficios = _beneficios;
+	bono = _bono;
+}
+string empleadoCompleto::getBeneficios(){
+	return beneficios;
+}
+double empleadoCompleto::getBono(){
+	return bono;
+}
+
+double empleadoCompleto::salarioTotal(){
+	return getSalarioBase() + bono;
+}
+void empleadoCompleto::mostrarInfo(){
+	empleado::mostrarInfo();
+	cout<<"beneficios: "<<beneficios<<endl;
+	cout<<"bono: "<<bono<<endl;
+}
+
+int main(){
+	
+	empleadoCompleto emp1;
+	emp1.setEmpleadoCompleto("juan lopez","001",2000,"seguro medico",500);
+	
+	emp1.mostrarInfo();
+	cout<<"salario: $"<<emp1.salarioTotal()<<endl;
+	
+	vehiculo vehiculo1;
+	vehiculo1.setVehiculo("Toyota","Corola",2023,180);
+	cout<<"\nInformacion de Vehiculo: \n";
+	vehiculo1.mostrarInfo();
+	cout<<"Acelerancion: \n";
+	vehiculo1.acelerar(20);
+
+
+	producto prod1;
+	prod1.setproducto("001","laptop",850.00,5);
+	prod1.mostrarInfo();
+	prod1.calcularValorTotal();
+	cout<<"Valor total : $"<< prod1.getProductoTotal()<<endl;
+	prod1.aplicarDescuento(10);
+	prod1.calcularValorTotal();
+	prod1.mostrarInfo();
+	cout<<"valor con descuento: $"<<prod1.getProductoTotal()<<endl;
+	
+	automovil automovil1;
+	automovil1.setautomovil("mercedez","amg",2020,200,4,"diesel");
+	moto moto1;
+	moto1.setmoto("harley-davidson","sporter",2023,200,true,1200);
+	
+	automovil1.mostrarInfo();
+	moto1.mostrarInfo();
+		
+	system("pause");
+	return 0;
+	
+}
+
+
+
+/*no me acordaba del taller perdon y apenas lo empece hacer hoy,
+pstd: no creo que compile bien, antes de enviarlo me mostraba error y al corregirlo tanto el dev como los compiladores online no lo procesaban, lo entregounicamnete por la hora*/
