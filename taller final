@@ -241,7 +241,7 @@ string empleado::getNumeroEmpleado(){
 	return numeroEmpleado;
 }
 void empleado::mostrarInfo(){
-	cout<<"Nombre de empleado: "<<nombreCompleto<<endl;
+	cout<<"\nNombre de empleado: "<<nombreCompleto<<endl;
 	cout<<"Numero de empleado: "<<numeroEmpleado<<endl;
 	cout<<"Salario base: "<<salarioBase<<endl;
 }
@@ -265,8 +265,9 @@ class empleadoCompleto : public empleado{
 empleadoCompleto::empleadoCompleto(){
 }
 
-void empleadoCompleto::setEmpleadoCompleto(string _nombreCompleto,string _numeroEmpledo, double _salarioBase,string _beneficios,double _bono){
+void empleadoCompleto::setEmpleadoCompleto(string _nombreCompleto,string _numeroEmpleado, double _salarioBase,string _beneficios,double _bono){
 	setEmpleado(_nombreCompleto, _numeroEmpleado, _salarioBase);
+	
 	beneficios = _beneficios;
 	bono = _bono;
 }
@@ -286,13 +287,54 @@ void empleadoCompleto::mostrarInfo(){
 	cout<<"bono: "<<bono<<endl;
 }
 
+class empleadoHoras : public empleado{
+	private:
+		int horasTrabajadas;
+		double tarifaHora;
+	public:
+		empleadoHoras();
+		void setEmpleadoHoras(string,string,double,int,double);
+		int getHorasTrabajadas();
+		double getTarifaHora();
+		double salarioTotal();
+		void mostrarInfo();
+};
+empleadoHoras::empleadoHoras(){
+}
+
+void empleadoHoras::setEmpleadoHoras(string _nombreCompleto,string _numeroEmpleado,double _salarioBase,int _horasTrabajadas,double _tarifaHora){
+	setEmpleado(_nombreCompleto, _numeroEmpleado, _salarioBase);
+	horasTrabajadas = _horasTrabajadas;
+    tarifaHora = _tarifaHora;
+}
+int empleadoHoras::getHorasTrabajadas(){
+	return horasTrabajadas;
+}
+
+double empleadoHoras::getTarifaHora(){
+	return tarifaHora;
+}
+
+double empleadoHoras::salarioTotal(){
+	return horasTrabajadas * tarifaHora;
+}
+
+void empleadoHoras::mostrarInfo(){
+	empleado::mostrarInfo();
+	cout<<"horas trabajadas: "<<horasTrabajadas<<endl;
+	cout<<"tarifa por hora: "<<tarifaHora<<endl;
+	cout << "Salario total: " << salarioTotal() << endl;
+}
+
+
+
+
+
+
+
+
+
 int main(){
-	
-	empleadoCompleto emp1;
-	emp1.setEmpleadoCompleto("juan lopez","001",2000,"seguro medico",500);
-	
-	emp1.mostrarInfo();
-	cout<<"salario: $"<<emp1.salarioTotal()<<endl;
 	
 	vehiculo vehiculo1;
 	vehiculo1.setVehiculo("Toyota","Corola",2023,180);
@@ -319,13 +361,18 @@ int main(){
 	
 	automovil1.mostrarInfo();
 	moto1.mostrarInfo();
+	
+	empleadoHoras emp2;
+	emp2.setEmpleadoHoras("María García", "002", 0, 40, 15);
+
+	empleadoCompleto emp1;
+	emp1.setEmpleadoCompleto("Juan Lopez","001",2000,"Seguro médico",500);
+
+	emp1.mostrarInfo();
+	cout<< "Salario Total: $" << emp1.salarioTotal() << endl;
+
+	emp2.mostrarInfo();
 		
 	system("pause");
 	return 0;
 	
-}
-
-
-
-/*no me acordaba del taller perdon y apenas lo empece hacer hoy,
-pstd: no creo que compile bien, antes de enviarlo me mostraba error y al corregirlo tanto el dev como los compiladores online no lo procesaban, lo entregounicamnete por la hora*/
