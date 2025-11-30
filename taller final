@@ -325,12 +325,204 @@ void empleadoHoras::mostrarInfo(){
 	cout<<"tarifa por hora: "<<tarifaHora<<endl;
 	cout << "Salario total: " << salarioTotal() << endl;
 }
+class Animal {
+private:
+    string nombre;
+    int edad;
+    double peso;
+public:
+    Animal(){}
+    Animal(string _nombre,int _edad,double _peso){
+        nombre = _nombre;
+        edad = _edad;
+        peso = _peso;
+    }
+    string getNombre(){
+        return nombre;
+        }
+    int getEdad(){
+        return edad;
+        }
+    double getPeso(){
+        return peso;
+    }
 
+    virtual void hacerSonido(){
+        cout<<"el animal hace un sonido generico"<<endl;
+    }
+    virtual void mostrarInfo(){
+        cout<<"\nNombre: "<<nombre<<endl;
+        cout<<"Edad: "<<edad<<endl;
+        cout<<"Peso: "<<peso<<" kg"<<endl;
+    }
+};
+class Mamifero : public Animal {
+private:
+    bool tieneColaMamifero;
+public:
+    Mamifero() {}
+    Mamifero(string _nombre,int _edad,double _peso,bool _tieneCola)
+        : Animal(_nombre, _edad, _peso){
+        tieneColaMamifero = _tieneCola;
+    }
 
+    void mostrarInfo() override{
+        Animal::mostrarInfo();
+        cout<<"¿Tiene cola?: "<<(tieneColaMamifero ? "Sí" : "No")<<endl;
+    }
 
+    void hacerSonido() override{
+        cout<<"el mamífero hace un sonido generico"<<endl;
+    }
+};
+class Ave : public Animal{
+private:
+    double envergaduraAlas;
+public:
+    Ave() {}
+    Ave(string _nombre,int _edad,double _peso,double _alas)
+        : Animal(_nombre, _edad, _peso){
+        envergaduraAlas = _alas;
+    }
 
+    void mostrarInfo() override{
+        Animal::mostrarInfo();
+        cout<<"envergadura de alas: "<<envergaduraAlas<<" m"<<endl;
+    }
+    void hacerSonido() override{
+        cout<<"el ave canta o pia"<<endl;
+    }
+};
 
+class Perro : public Mamifero{
+public:
+    Perro(string nombre,int edad,double peso,bool cola)
+        : Mamifero(nombre, edad, peso, cola){
+}
 
+    void hacerSonido() override{
+        cout<<"El perro ladra: Guau guau."<<endl;
+    }
+};
+
+class Gato : public Mamifero{
+public:
+    Gato(string nombre,int edad,double peso,bool cola)
+        : Mamifero(nombre, edad, peso, cola){
+}
+
+    void hacerSonido() override{
+        cout<<"El gato maulla: Miau."<<endl;
+    }
+};
+class Loro : public Ave{
+public:
+    Loro(string nombre,int edad,double peso,double alas)
+        : Ave(nombre, edad, peso, alas){
+}
+
+    void hacerSonido() override{
+        cout<<"el loro imita sonidos y dice: ¿quiere perico?"<<endl;
+    }
+};
+class Aguila : public Ave{
+public:
+    Aguila(string nombre,int edad,double peso,double alas)
+        : Ave(nombre, edad, peso, alas){
+}
+
+    void hacerSonido() override{
+        cout<<"el aguila emite un chillido poderoso."<<endl;
+    }
+};
+
+class Cuenta{
+protected:
+    string numeroCuenta;
+    string propietario;
+    double saldo;
+public:
+    Cuenta(){}
+    Cuenta(string _numero,string _propietario,double _saldo){
+        numeroCuenta = _numero;
+        propietario = _propietario;
+        saldo = _saldo;
+    }
+    virtual void depositar(double monto){
+        if(monto > 0) saldo += monto;
+        else cout<<"Monto invalido.\n";
+    }
+    virtual void retirar(double monto){
+        if(monto > 0 && monto <= saldo) saldo -= monto;
+        else cout<<"Fondos insuficientes o monto invalido.\n";
+    }
+    virtual void mostrarInfo(){
+        cout<<"\nCuenta: "<<numeroCuenta<<endl;
+        cout<<"Propietario: "<<propietario<<endl;
+        cout<<"Saldo: $"<<saldo<<endl;
+    }
+    string getNumeroCuenta(){
+        return numeroCuenta;
+        }
+    string getPropietario(){
+        return propietario;
+    }
+    double getSaldo(){
+        return saldo; 
+    }
+    void setSaldo(double s){
+        saldo = s;
+    }
+};
+class CuentaAhorro : public Cuenta{
+private:
+    double tasaInteres;
+public:
+    CuentaAhorro(){}
+    CuentaAhorro(string num,string prop,double saldo,double interes)
+        : Cuenta(num,prop,saldo){
+        tasaInteres = interes;
+    }
+    void generarInteres(){
+        double interes = saldo * tasaInteres;
+        saldo += interes;
+    }
+    void depositar(double monto) override{
+        cout << "\n[Cuenta Ahorro] Deposito con beneficio\n";
+        Cuenta::depositar(monto);
+    }
+    void retirar(double monto) override{
+        cout << "\n[Cuenta Ahorro] Retiro\n";
+        Cuenta::retirar(monto);
+    }
+};
+class CuentaCorriente : public Cuenta{
+private:
+    double limiteDescubierto;
+public:
+    CuentaCorriente(){}
+    CuentaCorriente(string num,string prop,double saldo,double limite)
+        : Cuenta(num,prop,saldo){
+        limiteDescubierto = limite;
+    }
+    void solicitarDescubierto(double monto){
+        if(monto <= limiteDescubierto){
+            saldo -= monto;
+            cout<<"Descubierto aprobado: $"<<monto<<endl;
+        }else{
+            cout<<"El descubierto excede el límite permitido.\n";
+        }
+    }
+    void retirar(double monto) override{
+        if(monto <= saldo + limiteDescubierto){
+            saldo -= monto;
+            cout<<"\n[Cuenta Corriente] Retiro con posible descubierto\n";
+        }
+        else{
+            cout<<"No se puede retirar: supera el límite con descubierto.\n";
+        }
+    }
+};
 
 
 
@@ -372,7 +564,21 @@ int main(){
 	cout<< "Salario Total: $" << emp1.salarioTotal() << endl;
 
 	emp2.mostrarInfo();
+
+    Perro perro("Rex", 5, 25, true);
+    Gato gato("Whiskers", 3, 4.5, false);
+    Loro loro("Tweety", 2, 0.5, 0.3);
+
+    perro.mostrarInfo();
+    perro.hacerSonido();
+
+    gato.mostrarInfo();
+    gato.hacerSonido();
+
+    loro.mostrarInfo();
+    loro.hacerSonido();
 		
 	system("pause");
 	return 0;
 	
+}
